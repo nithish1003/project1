@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Claim {{ claim.claim_number }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+
+<!-- Breadcrumb -->
+<nav class="mb-3">
+<ol class="breadcrumb small">
+<li class="breadcrumb-item">
+<a href="{% url 'claim:list' %}">Claims</a>
+</li>
+<li class="breadcrumb-item active">
+{{ claim.claim_number }}
+</li>
+</ol>
+</nav>
+
+
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-start mb-4">
+
+<div>
+
+<h4 class="mb-1">{{ claim.claim_number }}</h4>
+
+<div class="d-flex gap-2 flex-wrap">
+
+<span class="badge
+{% if claim.status == 'draft' %}bg-secondary
+{% elif claim.status == 'submitted' %}bg-primary
+{% elif claim.status == 'under_review' %}bg-warning text-dark
+{% elif claim.status == 'investigation' %}bg-info
+{% elif claim.status == 'approved' %}bg-success
+{% elif claim.status == 'partially_approved' %}bg-success
+{% elif claim.status == 'rejected' %}bg-danger
+{% elif claim.status == 'settled' %}bg-dark
+{% else %}bg-secondary{% endif %}">
+{{ claim.get_status_display }}
+</span>
+
+<span class="badge bg-light text-dark border">
+{{ claim.get_claim_type_display }}
+</span>
+
+<span class="text-muted small">
+Reported: {{ claim.reported_date|date:"d M Y" }}
+</span>
+
+</div>
+
+</div>
+
+<div class="d-flex gap-2">
+
+<a href="{% url 'claim:edit' claim.pk %}"
+class="btn btn-outline-primary btn-sm">
+Edit
+</a>
+
+<button class="btn btn-outline-danger btn-sm"
+data-bs-toggle="modal"
+data-bs-target="#deleteModal">
+Delete
+</button>
+
+</div>
+
+</div>
+
+
+
+<div class="row g-4">
+
+<!-- LEFT COLUMN -->
+<div class="col-lg-8">
+
+
+<!-- CLAIM DETAILS -->
+<div class="card shadow-sm mb-4">
+
+<div class="card-header bg-dark text-white">
+Claim Details
+</div>
+
+<div class="card-body">
+
+<div class="row g-3">
+
+<div class="col-md-4">
+<small class="text-muted">Claim Number</small>
+<div class="fw-semibold">{{ claim.claim_number }}</div>
+</div>
+
+<div class="col-md-4">
+<small class="text-muted">Claim Type</small>
+<div>{{ claim.get_claim_type_display }}</div>
+</div>
+
+<div class="col-md-4">
+<small class="text-muted">Status</small>
+<div>{{ claim.get_status_display }}</div>
+</div>
+
+<div class="col-md-4">
+<small class="text-muted">Incident Date</small>
+<div>{{ claim.incident_date|date:"d M Y" }}</div>
+</div>
+
+<div class="col-md-4">
+<small class="text-muted">Reported Date</small>
+<div>{{ claim.reported_date|date:"d M Y" }}</div>
+</div>
+
+<div class="col-md-4">
+<small class="text-muted">Assigned To</small>
+
+<div>
+{% if claim.assigned_to %}
+{{ claim.assigned_to.get_full_name|default:claim.assigned_to.username }}
+{% else %}
+<span class="text-muted">Unassigned</span>
+{% endif %}
+</div>
+
+</div>
+
+<div class="col-12">
+
+<small class="text-muted">Description</small>
+
+<div class="bg-light p-3 rounded small">
+{{ claim.description|default:"No description provided."|linebreaks }}
+</div>
+
+</div>
+
+{% if claim.rejection_reason %}
+
+<div class="col-12">
+
+<div class="alert alert-danger small mb-0">
+{{ claim.rejection_reason }}
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- FINANCIAL SUMMARY -->
+<div class="card shadow-sm mb-4">
+
+<div class="card-header bg-dark text-white">
+Financial Summary
+</div>
+
+<table class="table mb-0">
+
+<tr>
+<td>Claimed Amount</td>
+<td class="fw-bold">
+₹{{ claim.claimed_amount|default:0|intcomma }}
+</td>
+</tr>
+
+<tr>
+<td>Deductible</td>
+<td>
+₹{{ claim.deductible_amount|default:0|intcomma }}
+</td>
+</tr>
+
+<tr>
+<td>Approved</td>
+<td>
+{% if claim.approved_amount %}
+₹{{ claim.approved_amount|intcomma }}
+{% else %}
+—
+{% endif %}
+</td>
+</tr>
+
+<tr>
+<td>Settled</td>
+<td>
+{% if claim.settled_amount %}
+₹{{ claim.settled_amount|intcomma }}
+{% else %}
+—
+{% endif %}
+</td>
+</tr>
+
+</table>
+
+</div>
+
+
+
+<!-- NOTES -->
+<div class="card shadow-sm">
+
+<div class="card-header bg-dark text-white">
+Notes
+</div>
+
+<div class="card-body">
+
+<form method="post" action="{% url 'claim:add_note' claim.pk %}">
+
+{% csrf_token %}
+
+<div class="mb-2">
+
+<select name="note_type" class="form-control mb-2">
+
+<option value="internal">Internal</option>
+<option value="customer">Customer</option>
+<option value="investigation">Investigation</option>
+
+</select>
+
+<textarea name="content"
+class="form-control"
+placeholder="Write note"></textarea>
+
+</div>
+
+<div class="text-end">
+
+<button class="btn btn-dark btn-sm">
+Add Note
+</button>
+
+</div>
+
+</form>
+
+<hr>
+
+
+{% for note in claim.notes.all %}
+
+<div class="border rounded p-3 mb-2">
+
+<div class="small text-muted">
+
+{{ note.created_at|date:"d M Y H:i" }}
+
+{% if note.created_by %}
+— {{ note.created_by.username }}
+{% endif %}
+
+</div>
+
+<div class="small">
+
+{{ note.content }}
+
+</div>
+
+</div>
+
+{% empty %}
+
+<div class="text-muted small">
+No notes yet
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- RIGHT COLUMN -->
+<div class="col-lg-4">
+
+<!-- POLICY -->
+<div class="card shadow-sm mb-4">
+
+<div class="card-header bg-dark text-white">
+Policy
+</div>
+
+<ul class="list-group list-group-flush">
+
+<li class="list-group-item d-flex justify-content-between">
+<span>Policy</span>
+<span>{{ claim.policy.policy_number }}</span>
+</li>
+
+<li class="list-group-item d-flex justify-content-between">
+<span>Policyholder</span>
+<span>{{ claim.policy.holder }}</span>
+</li>
+
+<li class="list-group-item d-flex justify-content-between">
+<span>Start</span>
+<span>{{ claim.policy.start_date }}</span>
+</li>
+
+<li class="list-group-item d-flex justify-content-between">
+<span>End</span>
+<span>{{ claim.policy.end_date }}</span>
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteModal">
+
+<div class="modal-dialog modal-sm">
+
+<div class="modal-content">
+
+<div class="modal-header bg-danger text-white">
+
+<h6 class="modal-title">Delete Claim</h6>
+
+</div>
+
+<form method="post" action="{% url 'claim:delete' claim.pk %}">
+
+{% csrf_token %}
+
+<div class="modal-body small">
+
+Delete claim <strong>{{ claim.claim_number }}</strong> ?
+
+</div>
+
+<div class="modal-footer">
+
+<button class="btn btn-secondary btn-sm"
+data-bs-dismiss="modal">
+Cancel
+</button>
+
+<button class="btn btn-danger btn-sm">
+Delete
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ClaimIQ — Register</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:'DM Sans',sans-serif;
+background:#060b14;
+color:white;
+margin:0;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+}
+
+.container{
+width:900px;
+background:#0d1827;
+border-radius:14px;
+display:flex;
+overflow:hidden;
+box-shadow:0 15px 40px rgba(0,0,0,0.6);
+}
+
+.left{
+width:50%;
+padding:40px;
+border-right:1px solid #1a3050;
+}
+
+.right{
+width:50%;
+padding:40px;
+}
+
+h1{
+font-family:'Syne',sans-serif;
+font-size:34px;
+margin-bottom:15px;
+}
+
+p{
+color:#6a8aaa;
+margin-bottom:25px;
+}
+
+label{
+font-size:13px;
+color:#6a8aaa;
+}
+
+input{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:1px solid #1a3050;
+background:#111f35;
+color:white;
+margin-top:5px;
+margin-bottom:15px;
+}
+
+input:focus{
+outline:none;
+border-color:#00c8ff;
+}
+
+button{
+width:100%;
+padding:13px;
+border:none;
+border-radius:8px;
+background:linear-gradient(135deg,#00c8ff,#0077ff);
+color:black;
+font-weight:700;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.roles{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+.role{
+flex:1;
+padding:10px;
+border-radius:8px;
+background:#111f35;
+border:1px solid #1a3050;
+cursor:pointer;
+text-align:center;
+}
+
+.role.active{
+border-color:#00c8ff;
+}
+
+.link{
+margin-top:15px;
+font-size:13px;
+text-align:center;
+}
+
+.link a{
+color:#00c8ff;
+text-decoration:none;
+}
+
+.alert{
+background:#ff4d6a22;
+color:#ff4d6a;
+padding:10px;
+border-radius:6px;
+margin-bottom:10px;
+font-size:13px;
+}
+
+.features{
+display:flex;
+flex-direction:column;
+gap:15px;
+margin-top:30px;
+}
+
+.feature-card{
+display:flex;
+align-items:flex-start;
+gap:12px;
+padding:15px;
+background:#111f35;
+border:1px solid #1a3050;
+border-radius:10px;
+transition:0.3s;
+}
+
+.feature-card:hover{
+border-color:#00c8ff;
+transform:translateX(5px);
+}
+
+.feature-icon{
+width:35px;
+height:35px;
+border-radius:8px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+}
+
+.icon-blue{background:rgba(0,119,255,0.15);}
+.icon-green{background:rgba(0,229,160,0.15);}
+.icon-gold{background:rgba(245,200,66,0.15);}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LEFT SIDE -->
+
+<div class="left">
+
+<h1>ClaimIQ</h1>
+
+<p>
+Insurance Claims Reimagined with AI.  
+Submit and track your claims faster than ever.
+</p>
+
+<div class="features">
+
+<div class="feature-card">
+<div class="feature-icon icon-blue">🤖</div>
+<div>
+<h4>AI Document Analysis</h4>
+<p>AI automatically analyzes claim documents using OCR and ML.</p>
+</div>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon icon-green">📡</div>
+<div>
+<h4>Real Time Claim Tracking</h4>
+<p>Monitor claim status updates instantly.</p>
+</div>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon icon-gold">🛡️</div>
+<div>
+<h4>Fraud Detection Engine</h4>
+<p>AI detects suspicious patterns and prevents fraudulent claims.</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RIGHT SIDE -->
+
+<div class="right">
+
+<h2>Create Account</h2>
+<p>Register to access ClaimIQ</p>
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<form method="POST" action="{% url 'accounts:register' %}">
+{% csrf_token %}
+
+<!-- ROLE -->
+
+<div class="roles">
+
+<label class="role active">
+<input type="radio" name="role" value="policyholder" checked>
+Policyholder
+</label>
+
+<label class="role">
+<input type="radio" name="role" value="staff">
+Staff
+</label>
+
+<label class="role">
+<input type="radio" name="role" value="admin">
+Admin
+</label>
+
+</div>
+
+
+<label>Username</label>
+<input type="text" name="username" required>
+
+<label>First Name</label>
+<input type="text" name="first_name" required>
+
+<label>Last Name</label>
+<input type="text" name="last_name" required>
+
+<label>Email</label>
+<input type="email" name="email" required>
+
+<label>Password</label>
+<input type="password" name="password" required>
+
+<label>Confirm Password</label>
+<input type="password" name="confirm_password" required>
+
+<button type="submit">Create Account</button>
+
+</form>
+
+<div class="link">
+Already registered?
+<a href="{% url 'accounts:login' %}">Sign in here →</a>
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+document.querySelectorAll(".role").forEach(r=>{
+r.addEventListener("click",()=>{
+document.querySelectorAll(".role").forEach(a=>a.classList.remove("active"))
+r.classList.add("active")
+})
+})
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Submit Claim{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid px-4 py-3">
+
+<div class="card shadow-sm">
+
+<div class="card-header bg-dark text-white">
+Submit New Claim
+</div>
+
+<div class="card-body">
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<!-- Policy -->
+<div class="mb-3">
+
+<label class="form-label">Policy</label>
+
+<select name="policy" class="form-control" required>
+
+<option value="">Select Policy</option>
+
+{% for policy in policies %}
+
+<option value="{{ policy.id }}">
+{{ policy.policy_number }}
+</option>
+
+{% endfor %}
+
+</select>
+
+</div>
+
+
+<!-- Claim Type -->
+<div class="mb-3">
+
+<label class="form-label">Claim Type</label>
+
+<select name="claim_type" class="form-control" required>
+
+<option value="">Select Claim Type</option>
+
+<option value="accident">Accident</option>
+<option value="hospitalization">Hospitalization</option>
+<option value="critical_illness">Critical Illness</option>
+<option value="property_damage">Property Damage</option>
+<option value="theft">Theft</option>
+<option value="fire">Fire</option>
+<option value="natural_disaster">Natural Disaster</option>
+<option value="third_party">Third Party Liability</option>
+<option value="death">Death</option>
+<option value="maturity">Maturity</option>
+<option value="surrender">Surrender</option>
+<option value="other">Other</option>
+
+</select>
+
+</div>
+
+
+<!-- Incident Date -->
+<div class="mb-3">
+
+<label class="form-label">Incident Date</label>
+
+<input type="date"
+name="incident_date"
+class="form-control"
+required>
+
+</div>
+
+
+<!-- Description -->
+<div class="mb-3">
+
+<label class="form-label">Description</label>
+
+<textarea name="description"
+class="form-control"
+rows="4"
+placeholder="Describe the incident"></textarea>
+
+</div>
+
+
+<!-- Claim Amount -->
+<div class="mb-3">
+
+<label class="form-label">Claim Amount</label>
+
+<input type="number"
+name="claimed_amount"
+class="form-control"
+required>
+
+</div>
+
+
+<!-- Document Upload -->
+<div class="mb-3">
+
+<label class="form-label">Upload Document</label>
+
+<input type="file"
+name="document"
+class="form-control">
+
+<small class="text-muted">
+Upload supporting documents like reports, bills, photos, etc.
+</small>
+
+</div>
+
+
+<!-- Submit -->
+<div class="text-end">
+
+<button type="submit"
+class="btn btn-success">
+
+Submit Claim
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
