@@ -69,6 +69,8 @@ def claim_submit(request):
 
             claimed_amount=Decimal(request.POST.get("claimed_amount")),
 
+            deductible_amount=Decimal(request.POST.get("deductible_amount", 0)),
+
             created_by=request.user
         )
 
@@ -145,12 +147,21 @@ def claim_edit(request, id):
 
     claim = get_object_or_404(Claim, id=id)
 
+    if request.user != claim.policy.holder.user:
+        return render(request, "policy/admin_only.html", {
+            "message": "Only the policyholder can edit the claim"
+        })
+
     if request.method == "POST":
 
         claim.description = request.POST.get("description")
 
         claim.claimed_amount = Decimal(
             request.POST.get("claimed_amount")
+        )
+
+        claim.deductible_amount = Decimal(
+            request.POST.get("deductible_amount", 0)
         )
 
         claim.save()
@@ -246,6 +257,18 @@ def update_claim_status(request, id):
         status = request.POST.get("status")
 
         claim.status = status
+
+        if request.user.is_admin or request.user.role == 'staff':
+            claim.assigned_to = request.user
+
+        if status == 'approved':
+            claim.approved_amount = claim.claimed_amount
+        elif status == 'settled':
+            if claim.approved_amount:
+                claim.settled_amount = claim.approved_amount
+            else:
+                claim.settled_amount = claim.claimed_amount
+
         claim.save()
 
         ClaimAuditLog.objects.create(
@@ -270,9 +293,10 @@ def claim_assessment(request, claim_id):
 
     if request.method == "POST":
 
-        assessment, created = ClaimAssessment.objects.get_or_create(
-            claim=claim
-        )
+        try:
+            assessment = claim.assessment
+        except ClaimAssessment.DoesNotExist:
+            assessment = ClaimAssessment(claim=claim)
 
         assessment.verdict = request.POST.get("verdict")
         assessment.recommended_amount = request.POST.get("recommended_amount")
@@ -309,9 +333,10 @@ def claim_settlement(request, claim_id):
 
     if request.method == "POST":
 
-        settlement, created = ClaimSettlement.objects.get_or_create(
-            claim=claim
-        )
+        try:
+            settlement = claim.settlement
+        except ClaimSettlement.DoesNotExist:
+            settlement = ClaimSettlement(claim=claim)
 
         settlement.payment_mode = request.POST.get("payment_mode")
 

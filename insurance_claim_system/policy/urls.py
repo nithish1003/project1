@@ -9,6 +9,7 @@ urlpatterns = [
     path("create/", views.create_policy, name="create"),
     path("<int:id>/", views.policy_detail, name="detail"),
     path("edit/<int:id>/", views.edit_policy, name="edit"),
+    path("status/<int:id>/", views.update_policy_status, name="update_status"),
     path("delete/<int:id>/", views.delete_policy, name="delete"),
 
 ]

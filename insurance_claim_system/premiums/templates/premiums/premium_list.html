@@ -129,7 +129,7 @@
 <td class="text-muted small">{{ forloop.counter }}</td>
 
 <td>
-<a href="{% url 'policy_detail' schedule.policy.pk %}" class="fw-semibold text-decoration-none">
+<a href="{% url 'policy:detail' schedule.policy.pk %}" class="fw-semibold text-decoration-none">
 {{ schedule.policy.policy_number }}
 </a>
 </td>

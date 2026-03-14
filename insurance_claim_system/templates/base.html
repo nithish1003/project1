@@ -116,9 +116,11 @@ flex:1;
 <i class="bi bi-shield-exclamation"></i> Claims
 </a>
 
+{% if request.user.role != "admin" %}
 <a href="{% url 'claim:create' %}">
 <i class="bi bi-plus-circle"></i> File Claim
 </a>
+{% endif %}
 
 <a href="{% url 'accounts:logout' %}">
 <i class="bi bi-box-arrow-right"></i> Logout

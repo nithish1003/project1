@@ -10,6 +10,7 @@
 <title>ClaimIQ — Register</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
 
@@ -69,6 +70,19 @@ background:#111f35;
 color:white;
 margin-top:5px;
 margin-bottom:15px;
+}
+
+.input-container {
+position: relative;
+}
+
+.input-container i {
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+cursor: pointer;
+color: #6a8aaa;
 }
 
 input:focus{
@@ -270,10 +284,16 @@ Admin
 <input type="email" name="email" required>
 
 <label>Password</label>
-<input type="password" name="password" required>
+<div class="input-container">
+<input type="password" name="password" id="password" required>
+<i class="fas fa-eye" id="togglePassword"></i>
+</div>
 
 <label>Confirm Password</label>
-<input type="password" name="confirm_password" required>
+<div class="input-container">
+<input type="password" name="confirm_password" id="confirmPassword" required>
+<i class="fas fa-eye" id="toggleConfirmPassword"></i>
+</div>
 
 <button type="submit">Create Account</button>
 
@@ -297,6 +317,25 @@ document.querySelectorAll(".role").forEach(a=>a.classList.remove("active"))
 r.classList.add("active")
 })
 })
+
+// Password toggle functionality
+const togglePassword = document.getElementById('togglePassword');
+const password = document.getElementById('password');
+
+togglePassword.addEventListener('click', function() {
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    this.classList.toggle('fa-eye-slash');
+});
+
+const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+const confirmPassword = document.getElementById('confirmPassword');
+
+toggleConfirmPassword.addEventListener('click', function() {
+    const type = confirmPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+    confirmPassword.setAttribute('type', type);
+    this.classList.toggle('fa-eye-slash');
+});
 
 </script>
 

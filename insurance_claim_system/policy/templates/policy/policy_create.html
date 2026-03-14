@@ -75,8 +75,27 @@ background:#0f1b33;
 border-bottom:1px solid #1f335c;
 }
 
+.topbar-left{
+display:flex;
+align-items:center;
+}
+
+.back-btn{
+text-decoration:none;
+color:#9fb3d1;
+margin-right:20px;
+font-weight:500;
+}
+
 .topbar-title{
 font-size:20px;
+flex:1;
+text-align:center;
+}
+
+.topbar-right{
+display:flex;
+align-items:center;
 }
 
 .content{
@@ -175,23 +194,23 @@ display:block;
 
 <nav class="sidebar">
 
-<a class="sidebar-logo" href="{% url 'login' %}">
+<a class="sidebar-logo" href="{% url 'accounts:login' %}">
 InsureAI
 </a>
 
-<a class="nav-item" href="#">Dashboard</a>
+<a class="nav-item" href="{% url 'accounts:admin_dashboard' %}">Dashboard</a>
 
-<a class="nav-item" href="{% url 'policy_list' %}">
+<a class="nav-item" href="{% url 'policy:list' %}">
 My Policies
 </a>
 
-<a class="nav-item active" href="{% url 'policy_create' %}">
+<a class="nav-item active" href="{% url 'policy:create' %}">
 Create Policy
 </a>
 
-<a class="nav-item" href="#">Claims</a>
+<a class="nav-item" href="{% url 'claim:list' %}">Claims</a>
 
-<a class="nav-item" href="{% url 'logout' %}">
+<a class="nav-item" href="{% url 'accounts:logout' %}">
 Logout
 </a>
 
@@ -203,11 +222,17 @@ Logout
 
 <div class="topbar">
 
+<div class="topbar-left">
+<a class="back-btn" href="{% url 'policy:list' %}">
+&#8592; Back
+</a>
+</div>
+
 <div class="topbar-title">
 Create Policy
 </div>
 
-<div>
+<div class="topbar-right">
 {{ request.user.username }}
 </div>
 
@@ -215,7 +240,7 @@ Create Policy
 
 <div class="content">
 
-<form method="POST" action="{% url 'policy_create' %}">
+<form method="POST" action="{% url 'policy:create' %}">
 {% csrf_token %}
 
 <!-- STEP 1 -->
@@ -274,6 +299,16 @@ Policy Information
 </div>
 
 <div class="field">
+<label>Policy Holder</label>
+<select name="policyholder_id" required>
+    <option value="">Select Policy Holder</option>
+    {% for ph in policyholders %}
+    <option value="{{ ph.id }}">{{ ph.user.username }} - {{ ph.user.get_full_name|default:ph.user.email }}</option>
+    {% endfor %}
+</select>
+</div>
+
+<div class="field">
 <label>Policy Number</label>
 <input type="text" name="policy_number" required>
 </div>
@@ -305,6 +340,16 @@ Policy Information
 <div class="field">
 <label>Sum Insured</label>
 <input type="number" name="sum_insured" required>
+</div>
+
+<div class="field">
+<label>Premium Amount</label>
+<input type="number" name="premium" step="0.01" required>
+</div>
+
+<div class="field">
+<label>Deductible Amount</label>
+<input type="number" name="deductible_amount" step="0.01" value="0">
 </div>
 
 </div>

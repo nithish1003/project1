@@ -89,8 +89,9 @@
 
 <div class="card shadow-sm mb-4">
 
-<div class="card-header">
+<div class="card-header d-flex justify-content-between align-items-center">
 <h5>Recent Claims</h5>
+<a href="{% url 'claim:list' %}" class="btn btn-primary btn-sm">View All</a>
 </div>
 
 <div class="card-body">
@@ -112,7 +113,7 @@
 
 <tr>
 <td>{{ claim.claim_number }}</td>
-<td>{{ claim.policy.policyholder }}</td>
+<td>{{ claim.policy.holder }}</td>
 <td>₹{{ claim.claimed_amount|intcomma }}</td>
 <td>{{ claim.status }}</td>
 </tr>
@@ -137,8 +138,9 @@
 
 <div class="card shadow-sm">
 
-<div class="card-header">
+<div class="card-header d-flex justify-content-between align-items-center">
 <h5>Recent Policies</h5>
+<a href="{% url 'policy:list' %}" class="btn btn-primary btn-sm">View All</a>
 </div>
 
 <div class="card-body">
@@ -160,7 +162,7 @@
 
 <tr>
 <td>{{ policy.policy_number }}</td>
-<td>{{ policy.policyholder }}</td>
+<td>{{ policy.holder }}</td>
 <td>₹{{ policy.sum_insured|intcomma }}</td>
 <td>{{ policy.status }}</td>
 </tr>

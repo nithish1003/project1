@@ -16,8 +16,8 @@ Manage and track all insurance claims
 </span>
 </div>
 
-<a href="{% url 'claim:create' %}" class="btn btn-dark btn-sm">
-<i class="bi bi-plus-lg me-1"></i> New Claim
+<a href="{% url 'accounts:admin_dashboard' %}" class="btn btn-outline-primary btn-sm">
+<i class="bi bi-arrow-left me-1"></i> Back to Dashboard
 </a>
 
 </div>
@@ -238,6 +238,32 @@ class="btn btn-sm btn-outline-secondary">
 class="btn btn-sm btn-outline-primary">
 <i class="bi bi-pencil"></i>
 </a>
+
+{% if request.user.is_admin %}
+<form method="post" action="{% url 'claim:update_status' claim.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="approved">
+<button type="submit" class="btn btn-sm btn-success">Approve</button>
+</form>
+
+<form method="post" action="{% url 'claim:update_status' claim.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="rejected">
+<button type="submit" class="btn btn-sm btn-danger">Reject</button>
+</form>
+
+<form method="post" action="{% url 'claim:update_status' claim.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="under_review">
+<button type="submit" class="btn btn-sm btn-warning">Pending</button>
+</form>
+{% elif request.user.role == 'staff' %}
+<form method="post" action="{% url 'claim:update_status' claim.pk %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="under_review">
+<button type="submit" class="btn btn-sm btn-info">Review</button>
+</form>
+{% endif %}
 
 </td>
 

@@ -16,12 +16,11 @@
 <p class="text-muted">Staff Claim Management Dashboard</p>
 </div>
 
-<a href="{% url 'claim_list' %}" class="btn btn-dark">
+<a href="{% url 'claim:list' %}" class="btn btn-dark">
 View All Claims
 </a>
 
 </div>
-
 
 
 <!-- KPI CARDS -->
@@ -152,11 +151,15 @@ style="width: {{ item.percentage|default:0 }}%;"></div>
 
 <tr>
 
-<td>{{ claim.claim_number }}</td>
+<td>
+<a href="{% url 'claim:detail' claim.id %}">
+{{ claim.claim_number }}
+</a>
+</td>
 
 <td>{{ claim.policy.policy_number }}</td>
 
-<td>{{ claim.claim_type }}</td>
+<td>{{ claim.get_claim_type_display }}</td>
 
 <td>₹{{ claim.claimed_amount|default:0|intcomma }}</td>
 
@@ -176,7 +179,7 @@ bg-secondary
 {% endif %}
 ">
 
-{{ claim.status }}
+{{ claim.get_status_display }}
 
 </span>
 
@@ -234,15 +237,15 @@ bg-secondary
 
 <td>{{ claim.claim_number }}</td>
 
-<td>{{ claim.policy.policyholder }}</td>
+<td>{{ claim.policy.holder }}</td>
 
-<td>{{ claim.claim_type }}</td>
+<td>{{ claim.get_claim_type_display }}</td>
 
 <td>₹{{ claim.claimed_amount|intcomma }}</td>
 
 <td>
 
-<a href="{% url 'claim_detail' claim.id %}" class="btn btn-sm btn-primary">
+<a href="{% url 'claim:detail' claim.id %}" class="btn btn-sm btn-primary">
 Review
 </a>
 
@@ -265,7 +268,6 @@ Review
 </div>
 
 </div>
-
 
 </div>
 

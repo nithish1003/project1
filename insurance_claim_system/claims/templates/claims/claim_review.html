@@ -53,10 +53,14 @@ Policy: {{ claim.policy.policy_number }}
 
 </div>
 
-<a href="{% url 'claim:detail' claim.pk %}"
-class="btn btn-outline-secondary btn-sm">
-Back to Claim
-</a>
+<div class="d-flex gap-2">
+  <a href="{% url 'claim:settlement' claim.pk %}" class="btn btn-primary btn-sm {% if claim.status == 'settled' %}disabled{% endif %}">
+    Settle Claim
+  </a>
+  <a href="{% url 'claim:detail' claim.pk %}" class="btn btn-outline-secondary btn-sm">
+    Back to Claim
+  </a>
+</div>
 
 </div>
 
@@ -246,8 +250,11 @@ Assessment
 
 {% else %}
 
-<div class="card-body text-center text-muted">
-No assessment yet
+<div class="card-body text-center text-muted py-4">
+  <div class="mb-2">No assessment yet</div>
+  <a href="{% url 'claim:assessment' claim.pk %}" class="btn btn-outline-primary btn-sm mt-2">
+    Add Assessment
+  </a>
 </div>
 
 {% endif %}
@@ -285,8 +292,11 @@ Settlement
 
 {% else %}
 
-<div class="card-body text-center text-muted">
-No settlement recorded
+<div class="card-body text-center text-muted py-4">
+  <div class="mb-2">No settlement recorded</div>
+  <a href="{% url 'claim:settlement' claim.pk %}" class="btn btn-outline-primary btn-sm mt-2">
+    Record Settlement
+  </a>
 </div>
 
 {% endif %}

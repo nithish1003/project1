@@ -32,9 +32,18 @@ align-items:center;
 margin-bottom:30px;
 }
 
+.back-btn{
+text-decoration:none;
+color:#9fb3d1;
+margin-right:20px;
+font-weight:500;
+}
+
 h1{
 font-family:'DM Serif Display',serif;
 margin:0;
+flex:1;
+text-align:center;
 }
 
 .btn{
@@ -145,6 +154,11 @@ color:#9aa9c7;
 <div class="container">
 
 <div class="header">
+
+<a class="back-btn" href="{% url 'accounts:admin_dashboard' %}">
+&#8592; Back
+</a>
+
 <h1>My Policies</h1>
 
 <a href="{% url 'policy:create' %}" class="btn">
@@ -218,9 +232,30 @@ color:#9aa9c7;
 View
 </a>
 
+{% if request.user.role != 'policyholder' %}
 <a href="{% url 'policy:edit' policy.id %}" class="action-btn">
 Edit
 </a>
+{% endif %}
+{% if request.user.is_admin %}
+<form method="post" action="{% url 'policy:update_status' policy.id %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="active">
+<button type="submit" class="btn btn-sm btn-success" style="margin-left:5px;">Approve</button>
+</form>
+
+<form method="post" action="{% url 'policy:update_status' policy.id %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="cancelled">
+<button type="submit" class="btn btn-sm btn-danger" style="margin-left:5px;">Reject</button>
+</form>
+
+<form method="post" action="{% url 'policy:update_status' policy.id %}" style="display:inline;">
+{% csrf_token %}
+<input type="hidden" name="status" value="draft">
+<button type="submit" class="btn btn-sm btn-warning" style="margin-left:5px;">Pending</button>
+</form>
+{% endif %}
 
 </td>
 
